@@ -21,5 +21,5 @@ blocking tasks between stories.
 ###Runnign the server
 
 ```ruby
-bundle exec ruby app.rb TOKEN PROJECT_ID
+bundle exec ruby app.rb TOKEN PROJECT_ID PROJECT_START_DATETIME
 ```
