@@ -1,9 +1,10 @@
-require 'sinatra'
 require 'open-uri'
-require 'json'
+require 'bundler'
+Bundler.require
 
 TOKEN = ARGV[0]
 PROJECT = ARGV[1]
+PROJECT_START_DATE = ARGV[2]
 
 set :public_folder, File.dirname(__FILE__) + '/static'
 
@@ -31,7 +32,7 @@ get '/update_burndown' do
     total += (each["estimate"]) ? each["estimate"] : 0
   end
 
-  entries << { date: "2014-03-01T00:00:00Z", points: total_story_points }
+  entries << { date: PROJECT_START_DATE, points: total_story_points }
 
   json_stories.each do |story|
      entries << {
