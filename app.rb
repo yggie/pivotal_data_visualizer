@@ -56,53 +56,21 @@ get '/update_blockers/:state' do
     JSON.parse(f.read)
   end
 
-  format = {
-    nodes: [],
-    edges: []
-  }
-
-  count = 0
-  stories_x_count = 0
+  g = GraphViz.new( :G, :type => :digraph )
+  nodes = {}
 
   json_stories.each do |story|
-    stories_x_count += 1
-
-    format[:nodes] << {
-      id: story["id"].to_s,
-      label: story["name"],
-      size: story["estimate"],
-      x: 0,
-      y: stories_x_count 
-    }
-
-    y_axis = stories_x_count
+    nodes["##{story["id"]}"] = g.add_nodes(story["name"])
+    source = nodes["##{story["id"]}"]
 
     story["tasks"].each do |task|
-      task_node_exists = !!format[:nodes].detect { |node| node[:id] == task["description"] }
-
-      if !task_node_exists && !task["complete"]
-        y_axis += 1
-
-        format[:nodes] << {
-          id: task["description"].to_s,
-          label: task["description"],
-          size: 1,
-          x: 1,
-          y: y_axis / 2.0
-        }
-
-        format[:edges] << {
-          id: "edge#{count += 1}",
-          source: story["id"].to_s,
-          target: task["description"]
-        }
-      end
+      target = nodes[task["description"]]
+      target = g.add_nodes(task["description"]) if target.nil? && !task["complete"]
+      g.add_edges(source, target) if !task["complete"]
     end
   end
 
-  File.open("static/data_custom.json","w") do |f|
-    f.write(JSON.dump(format))
-  end
+  g.output(:png => "static/blockers.png")
 
   redirect '/blockers'
 end
