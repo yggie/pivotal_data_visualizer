@@ -60,13 +60,19 @@ get '/update_blockers/:state' do
   nodes = {}
 
   json_stories.each do |story|
-    nodes["##{story["id"]}"] = g.add_nodes(story["name"])
-    source = nodes["##{story["id"]}"]
+    nodes["##{story["id"]}"] = { node: g.add_nodes(story["name"]), tasks: story["tasks"] }
+  end
 
-    story["tasks"].each do |task|
-      target = nodes[task["description"]]
-      target = g.add_nodes(task["description"]) if target.nil? && !task["complete"]
-      g.add_edges(source, target) if !task["complete"]
+  nodes.each do |key, value|
+    source = value[:node]
+    value[:tasks].each do |task|
+      if !task["complete"] && nodes[task["description"]]
+        target = nodes[task["description"]]
+        g.add_edges(source, target[:node])
+      elsif !task["complete"] && nodes[task["description"]].nil?
+        new_target = g.add_nodes(task["description"])
+        g.add_edges(source, new_target)
+      end
     end
   end
 
