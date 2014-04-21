@@ -21,24 +21,40 @@ get '/burndown' do
 end
 
 get '/update_burndown' do
-  uri = URI.parse("https://www.pivotaltracker.com/services/v5/projects/#{PROJECT}/stories?fields=estimate%2Ccurrent_state%2Caccepted_at")
+  from_date = Date.parse(PROJECT_START_DATE)
 
+  uri = URI.parse("https://www.pivotaltracker.com/services/v5/projects/#{PROJECT}/stories?fields=estimate%2Ccurrent_state%2Caccepted_at")
   json_stories = uri.open('X-TrackerToken' => TOKEN) do |f|
     JSON.parse(f.read)
   end
+
   entries = []
 
-  total_story_points = json_stories.inject(0) do |total, each|
-    total += (each["estimate"]) ? each["estimate"] : 0
-  end
+  # Build the graph chronologically
+  to_date = Date.today
+  chronology_dates = (from_date..to_date).map { |date| date.to_s }
+  chronology = Hash[chronology_dates.zip Array.new(chronology_dates.count, 0)]
 
-  entries << { date: PROJECT_START_DATE, points: total_story_points }
+  # Build the first entry that will represent the first peack
+  # on the chart
+  total_story_points = 0
 
   json_stories.each do |story|
+    total_story_points += (story["estimate"]) ? story["estimate"] : 0
+
+    if story["current_state"] == "accepted" && story["estimate"]
+      story_date = Date.parse(story["accepted_at"]).to_s
+      chronology[story_date] += story["estimate"]
+    end
+  end
+
+  entries << { date: from_date.to_s, points: total_story_points }
+
+  chronology.each do |date, points|
      entries << {
-       date: story["accepted_at"],
-       points: total_story_points -= story["estimate"]
-     } if story["current_state"] == "accepted" && story["estimate"]
+       date: date,
+       points: total_story_points -= points
+     }
   end
 
   File.open("static/burndown.json","w") do |f|
