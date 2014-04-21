@@ -14,6 +14,8 @@ of summing up all the estimated stories and the first date is a fix moment in ti
 
 The information is group by date.
 
+To refresh the information, access `/update_burndown`.
+
 ###Story task graph (blockers)
 
 At work we have faced situations where stories tend to be related to one another and when the amount of relations between them grow, it gets hard to visualize that.
