@@ -44,6 +44,8 @@ So the advantage of using tasks is that once we decide that one of the edges bet
 
 To refresh the graph, access `/update_blockers/started`
 
+Note: This will only work for stories that are in `started` state. The graph data can be filtered by state.
+
 ###Runnign the server
 
 ```ruby
