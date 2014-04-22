@@ -34,7 +34,7 @@ B has other non story related tasks
 C has the following tasks
 * #a_id (unfinished)
 
-Then we will need to update the graph from our app accessing `/update_blockers/started` on the browser. That will fetch the information from Pivotal and rebuild the graph.
+Then we will need to update the graph from our app accessing `/update_blockers` on the browser.
 
 It will look like this:
 
@@ -42,9 +42,9 @@ It will look like this:
 
 So the advantage of using tasks is that once we decide that one of the edges between stories is no longer needed, we can set the story as finished, removing the link on the graph.
 
-To refresh the graph, access `/update_blockers/started`
+To refresh the graph, access `/update_blockers`
 
-Note: This will only work for stories that are in the same state. The graph data can be filtered by state.
+NOTE: If the graph doesn't update, try clearing cache.
 
 ###Runnign the server
 

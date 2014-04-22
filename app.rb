@@ -64,10 +64,8 @@ get '/update_burndown' do
   redirect "/burndown"
 end
 
-get '/update_blockers/:state' do
-  state = params[:state] || "started"
-
-  uri = URI.parse("https://www.pivotaltracker.com/services/v5/projects/#{PROJECT}/stories?fields=name%2Cestimate%2Ccurrent_state%2Clabels%2Ctasks&with_state=#{state}")
+get '/update_blockers' do
+  uri = URI.parse("https://www.pivotaltracker.com/services/v5/projects/#{PROJECT}/stories?fields=name%2Cestimate%2Ccurrent_state%2Clabels%2Ctasks")
   json_stories = uri.open('X-TrackerToken' => TOKEN) do |f|
     JSON.parse(f.read)
   end
