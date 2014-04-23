@@ -24,8 +24,6 @@ module Pivotal
 
       # Build the graph chronologically
       chronology_dates = (from_date..to_date).map { |date| date.to_s }
-
-      # Getting rid of the first entry sisnce that is processed separately
       chronology = Hash[chronology_dates.zip Array.new(chronology_dates.count, 0)]
 
       total_story_points = 0
