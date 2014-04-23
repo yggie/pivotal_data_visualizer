@@ -9,12 +9,14 @@ How does it work
 ###Burndown chart
 
 It shows all accepted stories progression by date. The first point is the result
-of summing up all the estimated stories and the first date is a fix moment in time
+of summing up all the estimated accepted stories and the first date is a fix moment in time
 (project start date).
 
 The information is group by date.
 
 To refresh the information, access `/update_burndown`.
+
+Also there information can be shown for certain date range, only need to access `/update_burndown/from/[from_date]/to/[to_date]`
 
 ###Story task graph (blockers)
 
