@@ -1,7 +1,7 @@
 pivotal_data_visualizer
 =======================
 
-A simple web app to visualise pivotal storie data.
+A simple web app to visualise pivotal stories data.
 
 How does it work
 ================
