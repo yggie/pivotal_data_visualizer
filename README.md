@@ -16,7 +16,7 @@ The information is group by date.
 
 To refresh the information, access `/update_burndown`.
 
-Also there information can be shown for certain date range, only need to access `/update_burndown/from/[from_date]/to/[to_date]`
+Also the information can be shown for certain date range, only need to access `/update_burndown/from/[from_date]/to/[to_date]`
 
 ###Story task graph (blockers)
 
