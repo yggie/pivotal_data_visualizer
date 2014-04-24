@@ -27,7 +27,6 @@ module Pivotal
       chronology_dates = chronology_dates.select { |date| !date.saturday? && !date.sunday? } if @options[:avoid_weekends]
       chronology_dates = chronology_dates.map { |date| date.to_s }
 
-      # Getting rid of the first entry sisnce that is processed separately
       chronology = Hash[chronology_dates.zip Array.new(chronology_dates.count, 0)]
 
       total_story_points = 0
