@@ -23,7 +23,9 @@ module Pivotal
       to_date = Date.parse(args.fetch(:to, Date.today.to_s))
 
       # Build the graph chronologically
-      chronology_dates = (from_date..to_date).map { |date| date.to_s }
+      chronology_dates = (from_date..to_date)
+      chronology_dates = chronology_dates.select { |date| !date.saturday? && !date.sunday? } if @options[:avoid_weekends]
+      chronology_dates = chronology_dates.map { |date| date.to_s }
 
       # Getting rid of the first entry sisnce that is processed separately
       chronology = Hash[chronology_dates.zip Array.new(chronology_dates.count, 0)]

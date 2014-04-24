@@ -2,7 +2,7 @@ require_relative './pivotal/operations'
 require 'bundler'
 Bundler.require
 
-PIVOTAL_OPERATIONS = Pivotal::Operations.new(ARGV[0], ARGV[1], project_start_date: ARGV[2])
+PIVOTAL_OPERATIONS = Pivotal::Operations.new(ARGV[0], ARGV[1], project_start_date: ARGV[2], avoid_weekends: true)
 
 set :public_folder, File.dirname(__FILE__) + '/static'
 
