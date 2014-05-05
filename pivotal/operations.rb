@@ -16,9 +16,8 @@ module Pivotal
     end
 
     def burndown(args = {})
-      json_stories = stories("?fields=estimate%2Ccurrent_state%2Caccepted_at%2Ccreated_at")
+      @burndow_json_stories = stories("?fields=estimate%2Cstory_type%2Ccurrent_state%2Caccepted_at%2Cname")
 
-      entries = []
       from_date = Date.parse(args.fetch(:from, @options[:project_start_date]))
       to_date = Date.parse(args.fetch(:to, Date.today.to_s))
 
@@ -30,12 +29,23 @@ module Pivotal
       chronology = Hash[chronology_dates.zip Array.new(chronology_dates.count, 0)]
 
       total_story_points = 0
+      stories_statistics = {}
+      entries = []
 
-      json_stories.each do |story|
+      @burndow_json_stories.each do |story|
+        stories_statistics[story["current_state"]] ||= []
+        if story["story_type"] == "feature" && story["current_state"] != "accepted"
+          stories_statistics[story["current_state"]] << story
+        end
+
+        story["estimate"] ||= -1
+
+        ## Build burndown chronology data
         if story["current_state"] == "accepted"
           story_accept_date = Date.parse(story["accepted_at"])
 
-          if story["estimate"] && story_accept_date >= from_date && story_accept_date <= to_date
+          if story["estimate"] >= 0 && story_accept_date >= from_date && story_accept_date <= to_date
+            stories_statistics[story["current_state"]] << story
             total_story_points += story["estimate"]
             chronology[story_accept_date.to_s] += story["estimate"]
           end
@@ -49,9 +59,9 @@ module Pivotal
          }
       end
 
-      File.open("static/burndown.json","w") do |f|
-        f.write(JSON.dump(entries))
-      end
+      stories_statistics["entries"] = entries
+
+      stories_statistics
     end
 
     def blockers

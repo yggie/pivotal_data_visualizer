@@ -1,7 +1,13 @@
 <html>
-<head>
+  <head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 </head>
 <body>
+<h2>Burndown chart</h2>
 <div id="chartContainer">
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://dimplejs.org/dist/dimple.v1.1.5.min.js"></script>
@@ -18,5 +24,33 @@
     });
   </script>
 </div>
+
+<% @burndown_data.each do |state, stories| %>
+  <h3><%= state %></h3>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <% stories.last.keys.each do |key| %>
+          <td><%= key %></td>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% stories.each do |story| %>
+        <tr>
+          <% story.each do |key, value| %>
+            <td><%= value %></td>
+          <% end %>
+        </tr>
+      <% end %>
+      <tr class="warning">
+        <td colspan="<%= stories.last.keys.count%>">TOTAL POINTS: <%= stories.inject(0) { |count, story| count += story["estimate"] }%></td>
+      </tr>
+      <tr class="warning">
+        <td colspan="<%= stories.last.keys.count%>">TOTAL STORIES: <%= stories.count%></td>
+      </tr>
+    </tbody>
+  </table>
+<% end %>
 </body>
 </html>
